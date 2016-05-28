@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CRM客户管理ERP系统</title>
+    <link type="text/css" rel="stylesheet" href="css/crm.css"/>
+</head>
+<body>
+<div class="sort" id="sort">
+    <a href="customerAdd.html" class="addBtn">增加新客户</a>
+    <div >选项</div>
+    <select name="select">
+        <option value="编号">编号</option>
+        <option value="姓名" selected="selected">姓名</option>
+        <option value="年龄">年龄</option>
+        <option value="电话">电话</option>
+        <option value="地址">地址</option>
+    </select>
+    <div class="up" id="up">升序</div>
+    <div class="down" id="down">降序</div>
+</div>
+
+<table class="box" id="box">
+    <thead>
+    <tr class="head" id="head">
+        <th class="w60">编号</th>
+        <th>姓名</th>
+        <th class="w60">年龄</th>
+        <th>电话</th>
+        <th class="w280">地址</th>
+        <th class="w100">相关操作</th>
+    </tr>
+    </thead>
+    <tbody class="list" id="boxList">
+        <!--<li>
+            <span class="w60">1</span>
+            <span>张三</span>
+            <span class="w60">28</span>
+            <span>13041086186</span>
+            <span class="w280">河北承德</span>
+            <span class="w100">
+                <a href="#">修改</a>
+                <a href="#">删除</a>
+            </span>
+        </li>-->
+    </tbody>
+</table>
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/crmIndex.js"></script>
+</body>
+</html>

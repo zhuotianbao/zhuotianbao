@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+        }
+        .box{
+            width: 200px;
+            line-height: 35px;
+            border: 1px solid #ccc;
+            box-shadow:5px 5px 10px 0 #cccccc;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+<div class="box" id="box"></div>
+<script type="text/javascript">
+    var url=window.location.href;
+    var urlObj=urlParse(url);
+    var num=urlObj.num;
+    ajax("/detailInfo?num="+num,function(data){
+        data.sex = data.sex == "1" ? "男" : "女";
+        document.getElementById("box").innerHTML="编号:"+data.num+"<br/>"+"姓名:"+data.name+"<br/>"+"性别:"+data.sex+"<br/>"+"分数:"+data.score;
+    });
+
+    function ajax(url, callback) {
+        var xhr = new XMLHttpRequest;
+        url += url.indexOf("?") === -1 ? "?_=" + Math.random() : "&_=" + Math.random();
+        xhr.open("get", url, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 & /^2\d{2}$/.test(xhr.status)) {
+                var data = xhr.responseText;
+                data = JSON.parse(data);
+                typeof callback === "function" ? callback(data) : null;
+            }
+        };
+        xhr.send(null);
+    }
+    function urlParse(url){
+        var obj={};
+        var reg=/([^?&=]+)=([^?&=]+)/g;
+        url.replace(reg,function(){
+            obj[arguments[1]]=arguments[2];
+        })
+        return obj;
+    }
+</script>
+</body>
+</html>
