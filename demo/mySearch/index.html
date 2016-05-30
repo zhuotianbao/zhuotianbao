@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        #box{
+            width: 592;
+            height: 50px;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            margin-left: -296px;
+        }
+
+        input{
+            outline: none;
+        }
+
+        #box label{
+            height: 40px;
+            line-height: 40px;
+            font-size: 20px;
+        }
+
+        #search{
+            height: 40px;
+            line-height: 40px;
+            font-size: 20px;
+        }
+
+        #searchBtn{
+            height: 40px;
+            line-height: 40px;
+            font-size: 20px;
+        }
+
+        #search-list-content {
+            border: 1px solid #ccc;
+            width: 200px;
+            position: absolute;
+            left: 447px;
+            top: 220px;
+            display: none;
+        }
+
+        #search-list-content ul {
+            list-style: none;
+
+        }
+
+        #search-list-content ul li {
+            cursor: pointer;
+        }
+
+        #search-list-content ul li:hover {
+            background: aliceblue;
+        }
+    </style>
+    <script src="jsonp.js"></script>
+<body>
+    <div id="box">
+        <label>搜索：<input id="search" type="search" placeholder="请输入您要搜索的关键字" autofocus></label>
+    <input type="button" id="searchBtn" value="百度一下">
+    </div>
+
+    <div id="search-list-content">
+        <ul>
+        </ul>
+    </div>
+</body>
+</html>
+<script>
+
+    window.onload = function () {
+        // 搜索框
+        var searchInput = document.querySelector('#search');
+        // 搜索按钮
+        var searchBtn = document.querySelector('#searchBtn');
+        // div
+        var box = document.querySelector('#search-list-content');
+        // ul
+        var ul = box.querySelector('ul');
+
+        // 管理div是否显示
+        var boxIsShow = {
+            isShow: false,
+            show: function () {
+                if (!this.isShow) {
+                    box.style.display = 'block';
+                    this.isShow = true;
+                }
+            },
+            hide: function () {
+                if (this.isShow) {
+                    box.style.display = 'none';
+                    this.isShow = false;
+                }
+            }
+        };
+        //每次键盘输入时自动匹配
+        searchInput.onkeyup = function (e) {
+            console.log('ok');
+            // 获取输入框的value
+            var value = searchInput.value;
+            // 检测value是否有值
+            if (value !== null) {
+                // 显示div容器
+                boxIsShow.show();
+                // 请求百度jsonp接口
+                callBaiDu(value);
+            }
+            // 阻止冒泡
+            e.cancelBubble = true;
+            e.stopPropagation();
+            return false;
+        };
+        // 给搜索按钮绑定click事件
+        searchBtn.onclick=function(){
+             window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(searchInput.value), '_blank');
+        }
+        
+
+        /**
+         * 调用百度jsonp接口
+         * @param {string} value 要搜索的关键字
+         */
+        function callBaiDu(value) {
+
+            jsonp('http://suggestion.baidu.com/su', {wd: value}, 'cb', function (data) {
+                // 创建一个文档碎片
+                var fragement = document.createDocumentFragment();
+                // 开始循环数据，因为搜索到的数据都放到s属性中，所以需要循环data.s
+                for (var i = 0, len = data.s.length; i < len; i++) {
+                    // 创建li标签
+                    var li = document.createElement('li');
+                    // 把搜索到的每一条数据放入li的innerHTML中
+                    li.innerHTML = data.s[i];
+                    // 把li拼接到文档碎片中
+                    fragement.appendChild(li);
+                }
+                // 清空ul 如果不清空则会一直累加
+                ul.innerHTML = '';
+                // 把文档碎片拼接到ul中
+                ul.appendChild(fragement);
+            })
+        }
+
+        // 给ul绑定一个click事件 利用事件冒泡获取点击的li
+        ul.onclick = function (e) {
+            e || (e = window.event);
+            var target = e.target || e.srcElement;
+            // 打开百度搜索页面
+            window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(target.innerHTML), '_blank');
+
+        };
+        // 给body绑定事件
+        document.body.onclick = function () {
+            // 隐藏div容器
+            boxIsShow.hide();
+        }
+    };
+
+</script>
